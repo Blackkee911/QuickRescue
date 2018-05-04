@@ -1,0 +1,4 @@
+1. https://cli-assets.heroku.com/heroku-cli/channels/stable/heroku-cli-x64.exe
+2. https://github.com/git-for-windows/git/releases/download/v2.16.2.windows.1/Git-2.16.2-64-bit.exe
+3. https://slproweb.com/download/Win32OpenSSL-1_1_0g.exe
+

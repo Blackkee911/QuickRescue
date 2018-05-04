@@ -1,0 +1,53 @@
+doctype html
+html
+    head
+        title= title
+        meta(charset='utf-8')
+        // Disable zoom in apple safari with [maximum-scale=1.0, user-scalable=no]
+        meta(name='viewport', content='width=device-width, initial-scale=1, maximum-scale=1.0, user-scalable=no')
+        // Allow safari full screen
+        meta(name='apple-mobile-web-app-capable', content='yes')
+        // Custom safari bookmark icon
+        link(rel='apple-touch-icon' href='./images/Icon-57.png')
+        link(rel='apple-touch-icon' sizes='76x76' href='./images/Icon-76.png')
+        link(rel='apple-touch-icon' sizes='120x120' href='./images/Icon-120.png')
+        link(rel='apple-touch-icon' sizes='152x152' href='./images/Icon-152.png')
+        
+        link(rel='stylesheet', href='./css/bootstrap.min.css', type='text/css')
+        link(rel='stylesheet', href='./css/fontawesome-all.css', type='text/css')
+        link(rel='stylesheet', href='https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.0.0-alpha.6/css/bootstrap.min.css', type='text/css')
+        link(rel='stylesheet', href='https://cdnjs.cloudflare.com/ajax/libs/ekko-lightbox/5.2.0/ekko-lightbox.min.css', type='text/css')
+        link(rel='stylesheet', href='./css/custom.css', type='text/css')
+        
+        style.
+            .row {
+                margin: 15px;
+            }
+            #content, body, html {
+                height: 100%; /* This works, but it will show scrollbars if the body or html elements have padding or margins. */
+            }
+            .center-cropped {
+                object-fit: none; /* Do not scale the image */
+                object-position: center; /* Center the image within the element */
+                height: 250px;
+                width: 340px;
+            }
+
+    body(class='bg-1')
+        div(id='content', class='container text-center font-color-white')
+            h4(style='padding-top: 10px; padding-bottom: 5px;') #{ title }
+            div(class='row')
+                for file in imageinfo.files
+                    div(class='col-md-4', style='padding-top: 10px; padding-bottom: 10px;')
+                        a(href=file.link, data-toggle='lightbox', data-gallery='gallery')
+                            img(src=file.link, class='img-fluid rounded center-cropped')
+
+    // js placed at the end of the document so the pages load faster
+    script(type='text/javascript', src='https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js')
+    script(type='text/javascript', src='./js/bootstrap.min.js')
+    script(type='text/javascript', src='https://cdnjs.cloudflare.com/ajax/libs/ekko-lightbox/5.2.0/ekko-lightbox.min.js')
+    script.
+        $(document).on("click", '[data-toggle="lightbox"]', function(event) {
+            event.preventDefault();
+            $(this).ekkoLightbox();
+        });

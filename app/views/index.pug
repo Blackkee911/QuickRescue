@@ -1,0 +1,95 @@
+doctype html
+html
+    head
+        title= title
+        meta(charset='utf-8')
+        // Disable zoom in apple safari with [maximum-scale=1.0, user-scalable=no"]
+        meta(name='viewport', content='width=device-width, initial-scale=1, maximum-scale=1.0, user-scalable=no')
+        // Allow safari full screen
+        meta(name='apple-mobile-web-app-capable', content='yes')
+        // Custom safari bookmark icon
+        link(rel='apple-touch-icon' href='./images/Icon-57.png')
+        link(rel='apple-touch-icon' sizes='76x76' href='./images/Icon-76.png')
+        link(rel='apple-touch-icon' sizes='120x120' href='./images/Icon-120.png')
+        link(rel='apple-touch-icon' sizes='152x152' href='./images/Icon-152.png')
+
+        link(rel='stylesheet', href='./css/bootstrap.min.css', type='text/css')
+        link(rel='stylesheet', href='./css/fontawesome-all.css', type='text/css')
+        link(rel='stylesheet', href='./css/custom.css', type='text/css')
+
+    body(class='bg-1')
+
+        nav(class='navbar bg-dark navbar-dark fixed-top')
+            div(class='mx-auto')
+                img(src='./img/RuamkatanyuFoundationLogo.png', style='max-width: 100%; height: auto;')
+
+        div(class='outer container-fluid-01 text-center font-color-white')
+            div(class='middle')
+                div(class='inner text-center')
+                    form(name='sosrequest', method='get', action='/sosrequest')
+                        input(type='image', alt='submit', name='submit', src='./img/sos.png', width='250', height='250')
+                    br
+                    //-br
+                    //-h1 Quick Rescue
+                    br
+                    each msg in messages
+                        div.flash= msg
+                        script.
+                            alert('#{ msg }');
+                    
+                    if username
+                        h3 You are logged in as #{username}
+                        div(class='mb-2')
+                            form(name='developers', method='get', action='/developers')
+                                input(type='submit', class='btn btn-sm btn-light btn-block', value='Developers')
+                        div(class='mb-2')
+                            form(name='tasklist', method='get', action='/tasklist')
+                                input(type='submit', class='btn btn-sm btn-light btn-block', value='Menu')
+                        div(class='mb-2')
+                            form(name='logout', method='post', action='/logout')
+                                input(type='submit', class='btn btn-sm btn-light btn-block', value='Log out')
+                    else
+                        //-div
+                            a(href='/signup') Sign up
+                        div(class='mb-2')
+                            form(name='developers', method='get', action='/developers')
+                                input(type='submit', class='btn btn-sm btn-light btn-block', value='Developers')
+                        div(class='mb-2')
+                            button(type='button', class='btn btn-sm btn-light', data-toggle='modal', data-target='#loginModal') LOG IN AS ADMIN
+                            
+                            // The Modal
+                            div(class='modal fade font-color-darkgray', id='loginModal')
+                                form(name='login', method='POST', action='/login')
+                                    div(class='modal-dialog modal-dialog-centered')
+                                        div(class='modal-content')
+                                            // Modal Header
+                                            div(class='modal-header')
+                                                div(class='text-center', style='width: 100%;')
+                                                    h4(class='modal-title') Login to Rescue system
+                                            // Modal body
+                                            div(class='modal-body')
+                                                div(class='input-group mb-2')
+                                                    div(class='input-group-prepend')
+                                                        span(class='input-group-text', style='width: 40px;')
+                                                            i(class='fas fa-user')
+                                                    input(type='text', name='username', class='form-control', placeholder='Username')
+                                                div(class='input-group mb-2')
+                                                    div(class='input-group-prepend')
+                                                        span(class='input-group-text', style='width: 40px;')
+                                                            i(class='fas fa-lock')
+                                                    input(type='password', name='password', class='form-control', placeholder='Password')
+                                            // Modal footer
+                                            div(class='modal-footer')
+                                                div(class='text-center', style='width: 100%;')
+                                                    input(type='submit', value='Log in', class='btn btn-danger btn-sm')
+                                                    //-div(class='btn-group btn-group-sm')
+                                                        button(type='button', class='btn btn-facebook')
+                                                            i(class='fab fa-facebook-f')
+                                                        button(type='button', class='btn btn-facebook') Login with Facebook                                                
+        nav(class='navbar bg-dark navbar-dark fixed-bottom')
+            div(class='mx-auto')
+                a(style='color: white; font-weight: normal; font-size: 12px;') Copyright © By Sutud, Apiwat [RMUTTO] & [RKU] . 2018
+
+    // js placed at the end of the document so the pages load faster
+    script(type='text/javascript', src='./js/jquery-3.3.1.min.js')
+    script(type='text/javascript', src='./js/bootstrap.min.js')

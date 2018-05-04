@@ -1,0 +1,137 @@
+doctype html
+html
+    head
+        title= title
+        meta(charset='utf-8')
+        // Disable zoom in apple safari with [maximum-scale=1.0, user-scalable=no"]
+        meta(name='viewport', content='width=device-width, initial-scale=1, maximum-scale=1.0, user-scalable=no')
+        // Allow safari full screen
+        meta(name='apple-mobile-web-app-capable', content='yes')
+        // Custom safari bookmark icon
+        link(rel='apple-touch-icon' href='./images/Icon-57.png')
+        link(rel='apple-touch-icon' sizes='76x76' href='./images/Icon-76.png')
+        link(rel='apple-touch-icon' sizes='120x120' href='./images/Icon-120.png')
+        link(rel='apple-touch-icon' sizes='152x152' href='./images/Icon-152.png')
+        
+        link(rel='stylesheet', href='./css/bootstrap.min.css', type='text/css')
+        link(rel='stylesheet', href='./css/fontawesome-all.css', type='text/css')
+        link(rel='stylesheet', href='./css/custom.css', type='text/css')
+
+        style.
+            .card {
+                font-family: 'Kanit', sans-serif;
+            }
+            #map {
+                height: auto;
+                width: 100%;
+            }
+            #content, body, html {
+                height: 100%; /* This works, but it will show scrollbars if the body or html elements have padding or margins. */
+            }
+            
+    body(class='bg-3 font-color-darkgray')
+    
+        // Collapsing The Navigation Bar
+        nav(class='navbar navbar-expand-md bg-1 navbar-dark')
+            a(class='navbar-brand', href='/') Quick Rescue 
+            button(class='navbar-toggler', type='button', data-toggle='collapse', data-target='#collapsibleNavbar')
+                span(class='navbar-toggler-icon')
+            div(class='collapse navbar-collapse', id='collapsibleNavbar')
+                ul(class='navbar-nav')
+                    li(class='nav-item')
+                        a(href='/', class='nav-link') Home
+                    li(class='nav-item')
+                        a(href='/dashboard', class='nav-link') Dashboard
+                    li(class='nav-item')
+                        a(href='/tasklist', class='nav-link') Tasklist
+                    li(class='nav-item')
+                        a(href='/developers', class='nav-link active') Delvelopers
+                ul(class='navbar-nav ml-auto')
+                    li(class='nav-item')
+                        form(name='logout', method='post', action='/logout')
+                            input(type='submit', value='Log out', class='btn btn-light btn-sm')
+
+        br
+        div(class='container-01')
+            h2 #{ title }
+            each msg in messages
+                div.flash= msg
+            div(id='content')
+                div(class='row justify-content-md-center')
+                    div(class='col-sm-3')
+                        div(class='card text-center', id='card-dev-01')
+                            div(class='container-fluid-02 text-center')
+                                img(class='card-img-top rounded-circle', src='./img/developers/dev_1.jpg', style='width: 60%;')
+                            div(class='card-body')
+                                h5(class='card-title') อาจารย์วชิรธร จันทร์ชมภู 
+                                    br
+                                    | Mr. Wachirathorn Janchomphu
+                                a(class='card-text') อาจารย์ประจำสาขาวิชาระบบสารสนเทศ
+                                    br
+                                    | คณะเทคโนโลยีสังคม 
+                                    br
+                                    | มหาวิทยาลัยเทคโนโลยีราชมงคลตะวันออก วิทยาเขตจันทบุรี
+                            div(class='card-footer bg-white')
+                                span(class='fas fa-phone', style='color: #C9C9C9;')
+                                a  087-7743285 
+                                br
+                                span(class='far fa-envelope', style='color: #C9C9C9;')
+                                a  wachirathorn.jan@gmail.com
+                        br
+                    div(class='col-sm-3')
+                        div(class='card text-center', id='card-dev-02')
+                            div(class='container-fluid-02 text-center')
+                                img(class='card-img-top rounded-circle', src='./img/developers/dev_2.jpg', style='width: 60%;')
+                            div(class='card-body')
+                                h5(class='card-title') นายสุทัศน์ ยิ้มเยื้อน 
+                                    br
+                                    | Mr. Sutud Yimyoen
+                                a(class='card-text') นักศึกษาภาคสมทบ สาขาวิชาระบบสารสนเทศ 
+                                    br
+                                    | คณะเทคโนโลยีสังคม 
+                                    br
+                                    | มหาวิทยาลัยเทคโนโลยีราชมงคลตะวันออก วิทยาเขตจันทบุรี
+                            div(class='card-footer bg-white')
+                                span(class='fas fa-phone', style='color: #C9C9C9;')
+                                a  082-2069935 
+                                br
+                                span(class='far fa-envelope', style='color: #C9C9C9;')
+                                a  peth.it57@gmail.com
+                        br
+                    div(class='col-sm-3')
+                        div(class='card text-center', id='card-dev-03')
+                            div(class='container-fluid-02 text-center')
+                                img(class='card-img-top rounded-circle', src='./img/developers/dev_3.jpg', style='width: 60%;')
+                            div(class='card-body')
+                                h5(class='card-title') นายอภิวัฒน์ เอกปิยะกุล
+                                    br
+                                    | Mr. Aphiwat Ekpiyakul
+                                a(class='card-text') นักศึกษาภาคสมทบ สาขาวิชาระบบสารสนเทศ 
+                                    br
+                                    | คณะเทคโนโลยีสังคม 
+                                    br
+                                    | มหาวิทยาลัยเทคโนโลยีราชมงคลตะวันออก วิทยาเขตจันทบุรี
+                            div(class='card-footer bg-white')
+                                span(class='fas fa-phone', style='color: #C9C9C9;')
+                                a  092-2659174
+                                br
+                                span(class='far fa-envelope', style='color: #C9C9C9;')
+                                a  l2arl3ash@gmail.com
+    
+    // js placed at the end of the document so the pages load faster
+    script.
+        function adjustCardHeight() {
+            // Keep height of all card
+            var heightArray = [];
+            heightArray.push(document.getElementById('card-dev-01').offsetHeight);
+            heightArray.push(document.getElementById('card-dev-02').offsetHeight);
+            heightArray.push(document.getElementById('card-dev-03').offsetHeight);
+
+            // Find highest
+            var highest = Math.max(...heightArray);
+            // Re-setting height by highest value
+            document.getElementById('card-dev-01').style.height = highest + 'px';
+            document.getElementById('card-dev-02').style.height = highest + 'px';
+            document.getElementById('card-dev-03').style.height = highest + 'px';
+        }
+        window.onload = adjustCardHeight;

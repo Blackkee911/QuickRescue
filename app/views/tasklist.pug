@@ -1,0 +1,182 @@
+doctype html
+html
+    head
+        title= title
+        meta(charset='utf-8')
+        // Disable zoom in apple safari with [maximum-scale=1.0, user-scalable=no"]
+        meta(name='viewport', content='width=device-width, initial-scale=1, maximum-scale=1.0, user-scalable=no')
+        // Allow safari full screen
+        meta(name='apple-mobile-web-app-capable', content='yes')
+        // Custom safari bookmark icon
+        link(rel='apple-touch-icon' href='./images/Icon-57.png')
+        link(rel='apple-touch-icon' sizes='76x76' href='./images/Icon-76.png')
+        link(rel='apple-touch-icon' sizes='120x120' href='./images/Icon-120.png')
+        link(rel='apple-touch-icon' sizes='152x152' href='./images/Icon-152.png')
+
+        link(rel='stylesheet', href='./css/bootstrap.min.css', type='text/css')
+        link(rel='stylesheet', href='./css/fontawesome-all.css', type='text/css')
+        link(rel='stylesheet', href='./css/custom.css', type='text/css')
+        link(rel='stylesheet', href='./css/datepicker.min.css')
+
+    body(class='bg-3 font-color-darkgray')
+        // Collapsing The Navigation Bar
+        nav(class='navbar navbar-expand-md bg-1 navbar-dark')
+            a(class='navbar-brand', href='/') Quick Rescue 
+            button(class='navbar-toggler', type='button', data-toggle='collapse', data-target='#collapsibleNavbar')
+                span(class='navbar-toggler-icon')
+            div(class='collapse navbar-collapse', id='collapsibleNavbar')
+                ul(class='navbar-nav')
+                    li(class='nav-item')
+                        a(href='/', class='nav-link') Home
+                    li(class='nav-item')
+                        a(href='/dashboard', class='nav-link') Dashboard
+                    li(class='nav-item')
+                        a(href='/tasklist', class='nav-link active') Tasklist
+                    li(class='nav-item')
+                        a(href='/developers', class='nav-link') Delvelopers
+                ul(class='navbar-nav ml-auto')
+                    li(class='nav-item')
+                        form(name='logout', method='post', action='/logout')
+                            input(type='submit', value='Log out', class='btn btn-light btn-sm')
+
+        div
+            // The Modal
+            div(class='modal fade font-color-darkgray', id='taskModal')
+                    div(class='modal-dialog modal-sm modal-dialog-centered')
+                        div(class='modal-content')
+                            // Modal Header
+                            div(class='modal-header')
+                                div(class='text-center', style='width: 100%;')
+                                    h4(class='modal-title') Select action
+                            // Modal body
+                            div(class='modal-body')
+                                    div(class='row mb-2')
+                                        div(class='col-12')
+                                            form(name='notifyvolunteer', method='POST', action='/notifyvolunteer')
+                                                input(type='text', id='notifytaskkey', name='notifytaskkey', hidden)
+                                                input(type='submit', class='btn btn-success btn-block', value='Notify volunteer via LINE')
+                                    div(class='row mb-2')
+                                        div(class='col-12') 
+                                            form(name='viewimages', method='POST', action='/viewimages')
+                                                input(type='text', id='imagestaskkey', name='imagestaskkey', hidden)
+                                                input(type='submit', class='btn btn-secondary btn-block', value='View images')
+                                    div(class='row mb-2')
+                                        div(class='col-12') 
+                                            form(name='updatetask', method='POST', action='/updatetask')
+                                                input(type='text', id='updatetaskkey', name='updatetaskkey', hidden)
+                                                input(type='submit', class='btn btn-secondary btn-block', value='Update Task')
+                                    div(class='row mb-2')
+                                        div(class='col-12') 
+                                            form(name='deletetask', method='POST', action='/deletetask')
+                                                input(type='text', id='deletetaskkey', name='deletetaskkey', hidden)
+                                                input(type='submit', onclick='return submitConfirmation(\'deletetask\', \'delete\');', class='btn btn-secondary btn-block', value='Delete Task')
+
+        br
+        div(class='container-01')
+            h2 #{ title }
+            each msg in messages
+                div.flash= msg
+                script.
+                    alert('#{ msg }');
+
+            // Collapse
+            button(data-toggle='collapse', data-target='#collapse-option', class='border-0 bg-3')
+                i(class='fas fa-chevron-down')
+            div(id='collapse-option', class='collapse')
+                // Date picker
+                form(name='searchtasklist', method='post', action='/searchtasklist')
+                    div(class='row')
+                        div(class='col-sm-2')
+                            div(class='input-group mb-2 input-group-sm')
+                                div(class='input-group-prepend')
+                                    span(class='input-group-text')
+                                        i(class='far fa-calendar-alt')
+                                input(data-toggle='datepicker', type='text', name='startdate', class='form-control', placeholder='Pick start date')
+                        div(class='col-sm-2')
+                            div(class='input-group mb-2 input-group-sm')
+                                div(class='input-group-prepend')
+                                    span(class='input-group-text')
+                                        i(class='far fa-calendar-alt')
+                                input(data-toggle='datepicker', type='text', name='enddate', class='form-control', placeholder='Pick end date')
+                        div(class='col-sm-1 mb-2')
+                            button(type='submit', class='btn btn-secondary btn-sm btn-block') 
+                                i(class='fas fa-search')
+                        div(class='col-sm-2')
+                            button(type='button', class='btn btn-secondary btn-sm btn-block', onclick='exportTableToCSV(\'tasklist.csv\')') Export to CSV
+            div(class='table-responsive-sm')
+                table(id='tasklist', class='table table-sm table-hover table-condensed')
+                    thead(class='thead-light')
+                        tr
+                            th #
+                            th Task ID
+                            th(id='requestor-th') Requestor
+                            th Description
+                            th Location
+                            th Address
+                            th Telephone
+                            th ReceiptDate
+                            th Status
+                            th Dead
+                            th Injured
+                            th requestType
+                            th HelpBy
+                            th Conclusion
+                    tbody
+                    - var count = 0 
+                    for task in taskslist
+                        - count = count + 1
+                        tr(onclick='openActionModal(\'' + task._id +'\')')
+                            td
+                                a #{ count }
+                            td 
+                                a #{task.taskId}
+                            td
+                                a #{task.requestor}
+                            td
+                                a #{task.description}
+                            td
+                                a(href='http://maps.google.com/maps?q=' + task.location.lat + ',' + task.location.lng, value=task.location.lat + ',' + task.location.lng, target='_blank', class='except-edit')
+                                    i(class='fas fa-map-marker-alt except-edit')
+                            td
+                                a #{task.address}
+                            td
+                                a #{task.telephone}
+                            td
+                                a #{task.receiptDate}
+                            td
+                                if task.status == 'Waiting for help'
+                                    span(class='badge badge-danger')
+                                        a #{task.status}
+                                else if task.status == 'Helping'
+                                    span(class='badge badge-pill badge-primary')
+                                        a #{task.status}
+                                else if task.status == 'Help finished'
+                                    span(class='badge badge-success')
+                                        a #{task.status}
+                                else if task.status == 'Rejected'
+                                    span(class='badge badge-secondary')
+                                        a #{task.status}
+                                else
+                                    span(class='badge badge-light')
+                                        a #{task.status}
+                            td
+                                a #{task.dead}
+                            td
+                                a #{task.injured}
+                            td
+                                a #{task.requestType}
+                            td
+                                a #{task.helpBy}
+                            td
+                                a #{task.conclusion}
+
+    // js placed at the end of the document so the pages load faster
+    script(type='text/javascript', src='./js/jquery-3.3.1.min.js')
+    script(type='text/javascript', src='./js/bootstrap.min.js')
+    script(type='text/javascript', src='./js/common.js')
+    script(type='text/javascript', src='./js/tasklist.client.controller.js')
+    script(type='text/javascript', src='./js/datepicker.min.js')
+    script.
+        $('[data-toggle="datepicker"]').datepicker({
+            format: 'yyyy-mm-dd'
+        });

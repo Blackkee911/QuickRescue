@@ -1,0 +1,106 @@
+doctype html
+html
+    head
+        title= title
+        meta(charset='utf-8')
+        // Disable zoom in apple safari with [maximum-scale=1.0, user-scalable=no]
+        meta(name='viewport', content='width=device-width, initial-scale=1, maximum-scale=1.0, user-scalable=no')
+        // Allow safari full screen
+        meta(name='apple-mobile-web-app-capable', content='yes')
+        // Custom safari bookmark icon
+        link(rel='apple-touch-icon' href='./images/Icon-57.png')
+        link(rel='apple-touch-icon' sizes='76x76' href='./images/Icon-76.png')
+        link(rel='apple-touch-icon' sizes='120x120' href='./images/Icon-120.png')
+        link(rel='apple-touch-icon' sizes='152x152' href='./images/Icon-152.png')
+        
+        link(rel='stylesheet', href='./css/bootstrap.min.css', type='text/css')
+        link(rel='stylesheet', href='./css/fontawesome-all.css', type='text/css')
+        link(rel='stylesheet', href='./css/custom.css', type='text/css')
+
+        style.
+            #map {
+                width:100%;
+            }
+            #content, body, html {
+                height: 100%; /* This works, but it will show scrollbars if the body or html elements have padding or margins. */
+            }
+
+    body(class='bg-1')
+        div(id='content', class='container text-center font-color-white')
+            h4(style='padding-top: 10px; padding-bottom: 5px;') #{ title }
+            each msg in messages
+                //-div.flash(id='flashmsg', hidden)= msg
+                script.
+                    alert('#{ msg }');
+            div(id='map', style='margin-bottom: 10px;')
+            form(name='sosrequest', method='post', action='/sosrequest', enctype='multipart/form-data')
+                div(id='inputarea')
+                    div(class='row' hidden)
+                        div(class='col-12')
+                            label(for='latitude') Latitude
+                            input(id='latitude', name='latitude', type='text')
+                            label(for='longitude') Longitude
+                            input(id='longitude', name='longitude', type='text')
+                    div(class='row')
+                        div(class='col-sm-12')
+                            div(class='input-group input-group-sm mb-2')
+                                div(class='input-group-prepend')
+                                    label(for='address', class='input-group-text', style='width: 110px;') พิกัดที่เกิดเหตุ
+                                input(id='address', name='address', type='text', class='form-control')                        
+                    div(class='row')
+                        div(class='col-sm-4')
+                            div(class='input-group input-group-sm mb-2')
+                                div(class='input-group-prepend')
+                                    label(for='requestor', class='input-group-text', style='width: 110px;') ผู้ร้องขอ
+                                input(id='requestor', name='requestor', type='text', class='form-control')
+                        div(class='col-sm-4')
+                            div(class='input-group input-group-sm mb-2')
+                                div(class='input-group-prepend')
+                                    label(for='requestType', class='input-group-text', style='width: 110px;') การร้องขอ
+                                input(id='requestType', name='requestType', type='text', class='form-control', hidden)                               
+                                select(class='form-control', id='selRequestType', onchange='setValueFromSelect(\'requestType\',this);')
+                                        option
+                                        option รถพยาบาลรับผู้ป่วย
+                                        option รถพยาบาลรับผู้บาดเจ็บ
+                                        option อุปกรณ์ตัดถ่างและส่องสว่าง
+                                        option รถสนับสนุนสัญญานไฟ
+                                        option รถยกหรือรถสไลด์
+                                        option อื่นๆ
+                        div(class='col-sm-4')
+                            div(class='input-group input-group-sm mb-2')
+                                div(class='input-group-prepend')
+                                    label(for='telephone', class='input-group-text', style='width: 110px;') เบอร์โทรศัพท์
+                                input(id='telephone', name='telephone', type='text', class='form-control')  
+                    div(class='row')
+                        div(class='col-sm-4')
+                            div(class='input-group input-group-sm mb-2')
+                                div(class='input-group-prepend')
+                                    label(for='description', class='input-group-text', style='width: 110px;') ข้อมูลเพิ่มเติม
+                                input(id='description', name='description', type='text', class='form-control')
+                        div(class='col-sm-4')
+                            div(class='input-group input-group-sm mb-2')
+                                div(class='input-group-prepend')
+                                    label(for='file', class='input-group-text', style='width: 110px;') แนบรูปภาพ
+                                input(type='file', id='browse', name='fileupload', style='display: none;', multiple, onChange='Handlechange();')
+                                input(type='text', id='filename', class='form-control', style='width: auto;', disabled, class='disabled-without-chang-bgcolor')
+                                button(type='button', id='fakeBrowse', class='form-control', style='width: 5px; background-color: #e9ecef; cursor: pointer;', onclick='HandleBrowseClick();') 
+                                    i(class='fas fa-camera')
+                        div(class='col-md-4')
+                            div(class='row')
+                                div(class='col-6')
+                                    a(href='/', class='btn btn-sm btn-secondary btn-block') Cancel
+                                div(class='col-6')
+                                    input(type='submit', class='btn btn-sm btn-danger btn-block', value='Send')
+
+    // js placed at the end of the document so the pages load faster
+    script.
+        function adjustMapHeight() {
+            document.getElementById('map').style.height = document.getElementById('content').offsetHeight - document.getElementById('inputarea').offsetHeight - 25 - 50 + 'px';
+        }
+        window.onload = adjustMapHeight;
+        
+    script(type='text/javascript', src='./js/jquery-3.3.1.min.js')
+    script(type='text/javascript', src='./js/bootstrap.min.js')
+    script(type='text/javascript', src='./js/common.js')
+    script(type='text/javascript', src='/js/sosrequest.client.controller.js')
+    script(async, defer, src='https://maps.googleapis.com/maps/api/js?key=' + googleApikey + '&callback=initMap')

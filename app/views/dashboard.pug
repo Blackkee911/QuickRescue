@@ -1,0 +1,121 @@
+doctype html
+html
+    head
+        title= title
+        meta(charset='utf-8')
+        // Disable zoom in apple safari with [maximum-scale=1.0, user-scalable=no"]
+        meta(name='viewport', content='width=device-width, initial-scale=1, maximum-scale=1.0, user-scalable=no')
+        // Allow safari full screen
+        meta(name='apple-mobile-web-app-capable', content='yes')
+        // Custom safari bookmark icon
+        link(rel='apple-touch-icon' href='./images/Icon-57.png')
+        link(rel='apple-touch-icon' sizes='76x76' href='./images/Icon-76.png')
+        link(rel='apple-touch-icon' sizes='120x120' href='./images/Icon-120.png')
+        link(rel='apple-touch-icon' sizes='152x152' href='./images/Icon-152.png')
+
+        link(rel='stylesheet', href='./css/bootstrap.min.css', type='text/css')
+        link(rel='stylesheet', href='./css/fontawesome-all.css', type='text/css')
+        link(rel='stylesheet', href='./css/datepicker.min.css')
+        link(rel='stylesheet', href='./css/custom.css', type='text/css')        
+
+    body(class='bg-3 font-color-darkgray')
+        // Collapsing The Navigation Bar
+        nav(class='navbar navbar-expand-md bg-1 navbar-dark')
+            a(class='navbar-brand', href='/') Quick Rescue 
+            button(class='navbar-toggler', type='button', data-toggle='collapse', data-target='#collapsibleNavbar')
+                span(class='navbar-toggler-icon')
+            div(class='collapse navbar-collapse', id='collapsibleNavbar')
+                ul(class='navbar-nav')
+                    li(class='nav-item')
+                        a(href='/', class='nav-link') Home
+                    li(class='nav-item')
+                        a(href='/dashboard', class='nav-link active') Dashboard
+                    li(class='nav-item')
+                        a(href='/tasklist', class='nav-link') Tasklist
+                    li(class='nav-item')
+                        a(href='/developers', class='nav-link') Delvelopers
+                ul(class='navbar-nav ml-auto')
+                    li(class='nav-item')
+                        form(name='logout', method='post', action='/logout')
+                            input(type='submit', value='Log out', class='btn btn-light btn-sm')
+        
+        br
+        div(class='container-01')
+            h2 #{ title }
+            each msg in messages
+                div.flash= msg
+
+            div(class='row')
+                div(class='col-sm-3')
+                    div(class='card')
+                        div(class='card-body')
+                            h5(class='card-title') Helping team statistic
+                            hr
+                            canvas(id='HelpingTeamStatistic', width='400', height='400')
+                //-div(class='col-sm-2')
+                    div(class='card bg-light')
+                        div(class='card-body')
+                            h4(class='card-title') Waitting
+                            p(class='card-text') 2
+                //-div(class='col-sm-2')
+                    div(class='card bg-light')
+                        div(class='card-body')
+                            h4(class='card-title') Helping
+                            p(class='card-text') 1
+                //-div(class='col-sm-2')
+                    div(class='card bg-light')
+                        div(class='card-body')
+                            h4(class='card-title') Help finished
+                            p(class='card-text') 95
+                //-div(class='col-sm-2')
+                    div(class='card bg-light')
+                        div(class='card-body')
+                            h4(class='card-title') Rejected
+                            p(class='card-text') 20
+
+    // js placed at the end of the document so the pages load faster
+    script(type='text/javascript', src='./js/Chart.js')
+    script(type='text/javascript', src='./js/Chart.PieceLabel.js')
+
+    script.
+        // Convert result from server to javascript array for chart
+        var taskLabel = [], taskData = [];
+        var sumTaskList = !{JSON.stringify(sumtasks)};
+        for(tmp in sumTaskList) {
+            taskLabel.push(sumTaskList[tmp]._id == '' ? 'N/A': sumTaskList[tmp]._id);
+            taskData.push(sumTaskList[tmp].total);
+        }
+
+        var ctx = document.getElementById('HelpingTeamStatistic');
+        var data = {
+            datasets: [
+                {
+                    data: taskData,
+                    backgroundColor: [
+                        '#009973',
+                        '#00b386',
+                        '#00cc99',
+                        '#00e6ac',
+                        '#00ffbf'
+                    ]
+                }
+            ],
+            labels: taskLabel
+        };
+        var myPieChart = new Chart(ctx,{
+            type: 'pie',
+            data: data,
+            options: {
+                pieceLabel: {
+                    render: 'percentage',
+                    /*render: function (args) {
+                        return '(' + args.value + ') ' + args.percentage + '%';
+                    },*/
+                    fontColor: '#fff',
+                    position: 'border',
+                    precision: 2
+                },
+                responsive: true
+            }
+        });
+        

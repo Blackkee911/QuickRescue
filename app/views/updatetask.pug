@@ -1,0 +1,200 @@
+doctype html
+html
+    head
+        title= title
+        meta(charset='utf-8')
+        // Disable zoom in apple safari with [maximum-scale=1.0, user-scalable=no"]
+        meta(name='viewport', content='width=device-width, initial-scale=1, maximum-scale=1.0, user-scalable=no')
+        // Allow safari full screen
+        meta(name='apple-mobile-web-app-capable', content='yes')
+        // Custom safari bookmark icon
+        link(rel='apple-touch-icon' href='./images/Icon-57.png')
+        link(rel='apple-touch-icon' sizes='76x76' href='./images/Icon-76.png')
+        link(rel='apple-touch-icon' sizes='120x120' href='./images/Icon-120.png')
+        link(rel='apple-touch-icon' sizes='152x152' href='./images/Icon-152.png')
+        
+        link(rel='stylesheet', href='./css/bootstrap.min.css', type='text/css')
+        link(rel='stylesheet', href='./css/fontawesome-all.css', type='text/css')
+        link(rel='stylesheet', href='./css/custom.css', type='text/css')
+
+        style.
+            #map {
+                height: auto;
+                width: 100%;
+            }
+            #content, body, html {
+                height: 100%; /* This works, but it will show scrollbars if the body or html elements have padding or margins. */
+            }
+            
+    body(class='bg-1')
+        div(id='content', class='container text-center font-color-white')
+            h4(style='padding-top: 10px; padding-bottom: 5px;') #{ title }
+            each msg in messages
+                div.flash= msg
+            div(class='row')
+                div(class='col-sm-8')
+                    div(id='map', style='margin-bottom: 10px;')     
+                div(class='col-sm-4')
+                    form(name='savetask', method='POST', action='/savetask')
+                        div(id='inputarea')
+                            div(class='row')
+                                div(class='col-sm-12', hidden)
+                                    div(class='input-group input-group-sm mb-2')
+                                        div(class='input-group-prepend')
+                                            label(for='_id', class='input-group-text', style='width: 110px;') _id
+                                        input(id='_id', name='_id', value='' + tasks._id + '', type='text', class='form-control')
+                                div(class='col-sm-12')
+                                    div(class='input-group input-group-sm mb-2')
+                                        div(class='input-group-prepend')
+                                            label(for='taskId', class='input-group-text', style='width: 110px;') Task ID
+                                        input(id='taskId', name='taskId', value='' + tasks.taskId + '', type='text', class='form-control', Disabled)
+                                div(class='col-sm-12')
+                                    div(class='input-group input-group-sm mb-2')
+                                        div(class='input-group-prepend')
+                                            label(for='requestor', class='input-group-text', style='width: 110px;') Requestor
+                                        input(id='requestor', name='requestor', value='' + tasks.requestor ? tasks.requestor : '' + '', type='text', class='form-control')
+                                div(class='col-sm-12')
+                                    div(class='input-group input-group-sm mb-2')
+                                        div(class='input-group-prepend')
+                                            label(for='description', class='input-group-text', style='width: 110px;') Description
+                                        input(id='description', name='description', value='' + tasks.description ? tasks.description : '' + '', type='text', class='form-control')
+                                div(class='col-sm-12')
+                                    div(class='input-group input-group-sm mb-2')
+                                        div(class='input-group-prepend')
+                                            label(for='requestType', class='input-group-text', style='width: 110px;') RequestType                                
+                                        input(id='requestType', name='requestType', value='' + tasks.requestType + '', type='text', class='form-control', hidden)                               
+                                        select(class='form-control', id='selRequestType', onchange='setValueFromSelect(\'requestType\', this);')
+                                            if tasks.requestType == ''
+                                                option(selected='selected')  
+                                            else
+                                                option  
+                                            if tasks.requestType == 'รถพยาบาลรับผู้ป่วย'
+                                                option(selected='selected') รถพยาบาลรับผู้ป่วย
+                                            else
+                                                option รถพยาบาลรับผู้ป่วย
+                                            if tasks.requestType == 'รถพยาบาลรับผู้บาดเจ็บ'
+                                                option(selected='selected') รถพยาบาลรับผู้บาดเจ็บ
+                                            else
+                                                option รถพยาบาลรับผู้บาดเจ็บ
+                                            if tasks.requestType == 'อุปกรณ์ตัดถ่างและส่องสว่าง'
+                                                option(selected='selected') อุปกรณ์ตัดถ่างและส่องสว่าง
+                                            else
+                                                option อุปกรณ์ตัดถ่างและส่องสว่าง
+                                            if tasks.requestType == 'รถสนับสนุนสัญญานไฟ'
+                                                option(selected='selected') รถสนับสนุนสัญญานไฟ
+                                            else
+                                                option รถสนับสนุนสัญญานไฟ
+                                            if tasks.requestType == 'รถยกหรือรถสไลด์'
+                                                option(selected='selected') รถยกหรือรถสไลด์
+                                            else
+                                                option รถยกหรือรถสไลด์
+                                            if tasks.requestType == 'อื่นๆ'
+                                                option(selected='selected') อื่นๆ
+                                            else
+                                                option อื่นๆ
+                                div(class='col-sm-12', hidden)
+                                            label(for='latitude') Latitude
+                                            input(id='latitude', name='latitude', value='' + tasks.location.lat ? tasks.location.lat : '' + '', type='text')
+                                            label(for='longitude') Longitude
+                                            input(id='longitude', name='longitude', value='' + tasks.location.lng ? tasks.location.lng : '' + '', type='text')
+                                div(class='col-sm-12')
+                                    div(class='input-group input-group-sm mb-2')
+                                        div(class='input-group-prepend')
+                                            label(for='address', class='input-group-text', style='width: 110px;') Address
+                                        input(id='address', name='address', value='' + tasks.address ? tasks.address : '' + '', type='text', class='form-control')
+                                div(class='col-sm-12')
+                                    div(class='input-group input-group-sm mb-2')
+                                        div(class='input-group-prepend')
+                                            label(for='telephone', class='input-group-text', style='width: 110px;') Telephone
+                                        input(id='telephone', name='telephone', value='' + tasks.telephone ? tasks.telephone : '' + '', type='text', class='form-control')
+                                div(class='col-sm-12')
+                                    div(class='input-group input-group-sm mb-2')
+                                        div(class='input-group-prepend')
+                                            label(for='receiptDate', class='input-group-text', style='width: 110px;') ReceiptDate
+                                        input(id='receiptDate', name='receiptDate', value='' + tasks.receiptDate ? tasks.receiptDate : '' + '', type='text', class='form-control', Disabled)
+                                div(class='col-sm-12')
+                                    div(class='input-group input-group-sm mb-2')
+                                        div(class='input-group-prepend')
+                                            label(for='status', class='input-group-text', style='width: 110px;') Status
+                                        input(id='status', name='status', value='' + tasks.status + '', type='text', class='form-control', hidden)                               
+                                        select(class='form-control', id='selTaskStatus', onchange='setValueFromSelect(\'status\',this);')
+                                            if tasks.status == 'Waiting for help'
+                                                option(selected='selected') Waiting for help
+                                            else
+                                                option Waiting for help
+                                            if tasks.status == 'Helping'
+                                                option(selected='selected') Helping
+                                            else
+                                                option Helping
+                                            if tasks.status == 'Help finished'
+                                                option(selected='selected') Help finished
+                                            else
+                                                option Help finished
+                                            if tasks.status == 'Rejected'
+                                                option(selected='selected') Rejected
+                                            else
+                                                option Rejected
+                                div(class='col-sm-12')
+                                    div(class='input-group input-group-sm mb-2')
+                                        div(class='input-group-prepend')
+                                            label(for='helpBy', class='input-group-text', style='width: 110px;') HelpBy                                
+                                        input(id='helpBy', name='helpBy', value='' + tasks.helpBy + '', type='text', class='form-control', hidden)                               
+                                        select(class='form-control', id='selHelpBy', onchange='setValueFromSelect(\'helpBy\', this);')
+                                            if tasks.helpBy == ''
+                                                option(selected='selected')  
+                                            else
+                                                option  
+                                            if tasks.helpBy == 'อาสาร่วมฯระยอง'
+                                                option(selected='selected') อาสาร่วมฯระยอง
+                                            else
+                                                option อาสาร่วมฯระยอง
+                                            if tasks.helpBy == 'อาสาข้างเคียง'
+                                                option(selected='selected') อาสาข้างเคียง
+                                            else
+                                                option อาสาข้างเคียง
+                                            if tasks.helpBy == 'อาสาฯร่วมระยองและข้างเคียง'
+                                                option(selected='selected') อาสาฯร่วมระยองและข้างเคียง
+                                            else
+                                                option อาสาฯร่วมระยองและข้างเคียง
+                                            if tasks.helpBy == 'ยกเลิกการช่วยเหลือ'
+                                                option(selected='selected') ยกเลิกการช่วยเหลือ
+                                            else
+                                                option ยกเลิกการช่วยเหลือ
+                                div(class='col-sm-12')
+                                    div(class='input-group input-group-sm mb-2')
+                                        div(class='input-group-prepend')
+                                            label(for='dead', class='input-group-text', style='width: 110px;') Dead
+                                        input(id='dead', name='dead', value='' + tasks.dead ? tasks.dead : '' + '', type='number', class='form-control')
+                                div(class='col-sm-12')
+                                    div(class='input-group input-group-sm mb-2')
+                                        div(class='input-group-prepend')
+                                            label(for='injured', class='input-group-text', style='width: 110px;') Injured
+                                        input(id='injured', name='injured', value='' + tasks.injured ? tasks.injured : '' + '', type='number', class='form-control')
+                                div(class='col-sm-12')
+                                    div(class='input-group input-group-sm mb-2')
+                                        div(class='input-group-prepend')
+                                            label(for='conclusion', class='input-group-text', style='width: 110px;') Conclusion
+                                        input(id='conclusion', name='conclusion', value='' + tasks.conclusion ? tasks.conclusion : '' + '', type='text', class='form-control')
+                            div(class='row')
+                                div(class='col-6')
+                                    a(id='btnCancel', class='btn btn-sm btn-secondary btn-block') Cancel
+                                div(class='col-6')
+                                    input(type='submit', onclick='return submitConfirmation(\'savetask\', \'update\');', class='btn btn-sm btn-danger btn-block', value='Update')
+                    br
+    // js placed at the end of the document so the pages load faster
+    script.
+        function adjustMapHeight() {
+            //-alert($(window).height());
+            if ($(window).height() < 700) {
+                document.getElementById('map').style.height = document.getElementById('content').offsetHeight / 2 + 'px';
+            } else {
+                document.getElementById('map').style.height = document.getElementById('content').offsetHeight - 25 - 50 + 'px';
+            }
+            
+        }
+        window.onload = adjustMapHeight;
+    script(type='text/javascript', src='./js/jquery-3.3.1.min.js')
+    script(type='text/javascript', src='./js/bootstrap.min.js')
+    script(type='text/javascript', src='./js/common.js')
+    script(type='text/javascript', src='./js/updatetask.client.controller.js')
+    script(async, defer, src='https://maps.googleapis.com/maps/api/js?key=' + googleApikey + '&callback=initMap')
